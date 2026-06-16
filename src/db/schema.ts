@@ -8,6 +8,7 @@ import {
   integer,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -17,7 +18,7 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 50 }),
   lastName: varchar('last_name', { length: 50 }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  upatedAt: timestamp('upated_at').notNull().defaultNow(),
+  upatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
 export const habits = pgTable('habits', {
@@ -31,7 +32,7 @@ export const habits = pgTable('habits', {
   target: integer('target').default(1),
   isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  upatedAt: timestamp('upated_at').notNull().defaultNow(),
+  upatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
 export const entries = pgTable('entries', {
@@ -51,7 +52,7 @@ export const tags = pgTable('tags', {
   name: varchar('name', { length: 50 }).notNull().unique(),
   color: varchar('color', { length: 7 }).default('#6b7280'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  upatedAt: timestamp('upated_at').notNull().defaultNow(),
+  upatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
 export const habitTags = pgTable('habit_tags', {
@@ -61,7 +62,7 @@ export const habitTags = pgTable('habit_tags', {
       onDelete: 'cascade',
     })
     .notNull(),
-  tagId: uuid('tage_id')
+  tagId: uuid('tag_id')
     .references(() => tags.id, { onDelete: 'cascade' })
     .notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -93,8 +94,17 @@ export const habitTagsRelations = relations(habitTags, ({ one }) => ({
     fields: [habitTags.habitId],
     references: [habits.id],
   }),
-  tags: one(tags, {
+  tag: one(tags, {
     fields: [habitTags.tagId],
     references: [tags.id],
   }),
 }))
+
+export type User = typeof users.$inferSelect
+export type Habits = typeof habits.$inferSelect
+export type Entry = typeof entries.$inferSelect
+export type Tag = typeof tags.$inferSelect
+export type HabitTag = typeof habitTags.$inferSelect
+
+export const insertedUserSchema = createInsertSchema(users)
+export const selectUserSchema = createSelectSchema(users)

@@ -19,7 +19,7 @@ const envSchema = z.object({
     .default('development'),
   APP_STAGE: z.enum(['dev', 'test', 'production']).default('dev'),
   PORT: z.coerce.number().positive().default(3000),
-  // DATABASE_URL: z.string().startsWith('postgres://'),
+  DATABASE_URL: z.string().startsWith('postgres://'),
   // JWT_SECRET: z.string().min(32, 'Must be 32 characters long'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().min(10).max(20).default(12),
