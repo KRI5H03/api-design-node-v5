@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express'
 import { verifyToken, type JwtPayload } from '../utils/jwt.ts'
 
 export interface AuthenticatedRequest extends Request {
-  user?: JwtPayload
+  user: JwtPayload
 }
 
 export const authenticateToken = async (
@@ -22,7 +22,7 @@ export const authenticateToken = async (
     // console.log('Before verify')
     const payload = await verifyToken(token)
     console.log(payload)
-    req.user = payload
+    req.user = payload as any
     next()
   } catch (e) {
     return res.status(403).json({ error: 'Forbidden' })
