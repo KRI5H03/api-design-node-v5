@@ -22,7 +22,7 @@ export const authenticateToken = async (
     // console.log('Before verify')
     const payload = await verifyToken(token)
     console.log(payload)
-    req.user = payload as any
+    ;(req as AuthenticatedRequest).user = payload
     next()
   } catch (e) {
     return res.status(403).json({ error: 'Forbidden' })

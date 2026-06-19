@@ -2,7 +2,11 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { validateBody, validateParams } from '../middleware/validation.ts'
 import { authenticateToken } from '../middleware/auth.ts'
-import { createHabit } from '../controllers/habitController.ts'
+import {
+  createHabit,
+  getUserHabits,
+  updateHabit,
+} from '../controllers/habitController.ts'
 
 const router = Router()
 
@@ -19,9 +23,9 @@ const completeParamsSchema = z.object({
 })
 router.use(authenticateToken)
 
-router.get('/', (req, res) => {
-  res.json({ message: 'habits' })
-})
+router.get('/', getUserHabits)
+
+router.patch('/:id', updateHabit)
 
 router.get('/:id', (req, res) => {
   res.json({ message: 'got one habit' })
