@@ -90,7 +90,7 @@ export const updateHabit = async (req: AuthenticatedRequest, res: Response) => {
       const [updatedHabit] = await tx
         .update(habits)
         .set({ ...updates, updatedAt: new Date() })
-        .where(and(eq(habitTags.id, id), eq(habits.userId, userId)))
+        .where(and(eq(habits.id, id), eq(habits.userId, userId)))
         .returning()
       if (!updateHabit) {
         return res.status(401).end()
